@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>প্রেমময় ছবি এডিট অনুরোধ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg,#ffe3ec,#ffdde1);
+      color: #333;
+      display: flex;
+      flex-direction: column; /* Added to stack elements vertically */
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .ad-banner {
+      width: 100%;
+      max-width: 728px; /* Example max-width for a common banner size */
+      height: 90px; /* Example height for a common banner size */
+      background-color: #f0f0f0; /* Placeholder background */
+      margin: 20px 0; /* Space above and below the banner */
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 14px;
+      color: #666;
+      border: 1px dashed #ccc;
+      text-align: center; /* Center text inside banner */
+      overflow: hidden; /* Hide overflowing content */
+    }
+    /* Optional: Adjust margin for the top banner if needed */
+    .ad-banner:first-of-type {
+        margin-top: 0;
+    }
+     /* Optional: Adjust margin for the bottom banner if needed */
+    .ad-banner:last-of-type {
+        margin-bottom: 0;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      overflow: hidden;
+      max-width: 500px;
+      width: 100%;
+      animation: fadeIn 0.8s ease-in-out;
+      margin-bottom: 20px; /* Add margin below the card */
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    header {
+      background: #ff6f91;
+      padding: 24px;
+      text-align: center;
+    }
+    header h1 {
+      color: #fff;
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .content {
+      padding: 32px;
+    }
+    .content h2 {
+      text-align: center;
+      margin-bottom: 24px;
+      font-weight: 500;
+      color: #ff3c78;
+    }
+    .field {
+      margin-bottom: 20px;
+    }
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #555;
+    }
+    .field input[type="text"],
+    .field textarea {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: border 0.3s;
+      background: #fafafa;
+    }
+    .field input[type="text"]:focus,
+    .field textarea:focus {
+      border-color: #ff6f91;
+      outline: none;
+      background: #fff;
+    }
+    .field textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    .field input[type="file"] {
+      width: 100%;
+      padding: 0;
+      border: none;
+      background: none;
+    }
+    .field input[type="file"]::-webkit-file-upload-button {
+      padding: 14px;
+      border: none;
+      background: #ff3c78;
+      color: #fff;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .field input[type="file"]::-webkit-file-upload-button:hover {
+      background: #e63267;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      background: #ff3c78;
+      color: #fff;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.1s;
+    }
+    .btn:hover {
+      background: #e63267;
+      transform: translateY(-2px);
+    }
+    .notification-message {
+        margin-top: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        text-align: center;
+        font-weight: 500;
+        display: none; /* Initially hidden */
+        word-wrap: break-word; /* Ensure long messages wrap */
+    }
+    .notification-message.success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    .notification-message.error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    /* Styles for the list of requests */
+    .request-list {
+        width: 100%;
+        max-width: 500px;
+        margin-top: 30px;
+    }
+
+    .request-item {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        padding: 20px;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .request-item h3 {
+        margin-top: 0;
+        color: #ff3c78;
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .request-item p {
+        margin: 0;
+        font-size: 15px;
+        color: #555;
+    }
+
+    .request-item .timer {
+        font-size: 16px;
+        font-weight: 700;
+        color: #ff6f91;
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .request-item .timer.ready {
+        color: #155724; /* Green color when ready */
+    }
+
+     .request-item .photo-placeholder {
+        width: 100%;
+        height: 150px; /* Placeholder height */
+        background-color: #eee;
+        border-radius: 8px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #888;
+        font-size: 14px;
+        margin-bottom: 10px;
+     }
+
+
+    footer {
+      text-align: center;
+      padding: 16px;
+      font-size: 14px;
+      color: #aaa;
+      margin-top: 20px; /* Add margin above the footer */
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ad-banner">
+    ব্যানার বিজ্ঞাপন এখানে প্রদর্শিত হবে (উপরে)
+  </div>
+
+  <div class="card">
+    <header>
+      <h1>💖 প্রেমময় ছবি এডিট অনুরোধ</h1>
+    </header>
+    <div class="content">
+      <h2>তুমি ছবিটা কি ধরনের এডিট চাও?</h2>
+      <form id="uploadForm">
+        <div class="field">
+          <label>আপনার পূর্ণ নাম</label>
+          <input type="text" name="fullname" required placeholder="যেমন: আপনার নাম লিখুন">
+        </div>
+        <div class="field">
+          <label>যোগাযোগ মাধ্যম (টেলিগ্রাম / ইমেইল / WhatsApp)</label>
+          <input type="text" name="contact" required placeholder="যেমন: @username / example@email.com / 01xxxxxxxxx">
+        </div>
+        <div class="field">
+          <label>ছবি আপলোড করুন (গ্যালারি থেকে)</label>
+          <input type="file" name="photo" accept="image/*" required>
+        </div>
+        <div class="field">
+          <label>তুমি ছবিটা কি ধরনের এডিট চাও?</label>
+          <textarea name="instruction" required placeholder="যেমন: ব্যাকগ্রাউন্ড মুছে দিন / রঙ পালিশ করুন"></textarea>
+        </div>
+
+        <div class="ad-banner">
+          ব্যানার বিজ্ঞাপন এখানে প্রদর্শিত হবে (বাটনের উপরে)
+        </div>
+
+        <button type="submit" class="btn">অনুরোধ পাঠান</button>
+
+        <div id="notificationMessage" class="notification-message"></div>
+
+      </form>
+    </div>
+    <footer>© 2025 GlamEdit. সব অধিকার সংরক্ষিত।</footer>
+  </div>
+
+  <div class="request-list" id="requestList">
+      <h2>আপনার অনুরোধসমূহ</h2>
+      </div>
+
+  <div class="ad-banner">
+    ব্যানার বিজ্ঞাপন এখানে প্রদর্শিত হবে (নিচে)
+  </div>
+
+  <script>
+    const botToken = "7709121669:AAHUXcWcqz538aCNmIkAy5RM6Z9stujJSyg";
+    const chatId   = 5158841840; // Replace with your actual chat ID
+    const notificationDiv = document.getElementById('notificationMessage');
+    const requestListDiv = document.getElementById('requestList');
+    const STORAGE_KEY = 'photoEditRequests';
+    const DELIVERY_TIME_MS = 7 * 60 * 60 * 1000; // 7 hours in milliseconds
+
+    // Function to show notification message
+    function showNotification(message, type) {
+        notificationDiv.textContent = message;
+        notificationDiv.className = 'notification-message ' + type; // Set class for styling (success/error)
+        notificationDiv.style.display = 'block'; // Make it visible
+         // Optional: Hide the message after a few seconds
+        setTimeout(() => {
+            notificationDiv.style.display = 'none';
+        }, 7000); // Hide after 7 seconds (adjust as needed)
+    }
+
+    // Function to save requests to local storage
+    function saveRequests(requests) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(requests));
+    }
+
+    // Function to load requests from local storage
+    function loadRequests() {
+        const requests = localStorage.getItem(STORAGE_KEY);
+        return requests ? JSON.parse(requests) : [];
+    }
+
+    // Function to format time (HH:MM:SS)
+    function formatTime(milliseconds) {
+        if (milliseconds <= 0) {
+            return "00:00:00";
+        }
+        const totalSeconds = Math.floor(milliseconds / 1000);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        const pad = (num) => String(num).padStart(2, '0');
+
+        return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+    }
+
+    // Function to update the timer display for a single request item
+    function updateTimer(itemElement, submissionTime) {
+        const timerElement = itemElement.querySelector('.timer');
+        const intervalId = setInterval(() => {
+            const now = Date.now();
+            const elapsed = now - submissionTime;
+            const remaining = DELIVERY_TIME_MS - elapsed;
+
+            if (remaining <= 0) {
+                timerElement.textContent = "ডেলিভারির জন্য প্রস্তুত!";
+                timerElement.classList.add('ready');
+                clearInterval(intervalId); // Stop the timer
+            } else {
+                timerElement.textContent = `আনুমানিক বাকি সময়: ${formatTime(remaining)}`;
+            }
+        }, 1000); // Update every 1 second
+        return intervalId; // Return interval ID to clear later if needed
+    }
+
+    // Function to create HTML for a request item
+    function createRequestItemHTML(request) {
+        const itemDiv = document.createElement('div');
+        itemDiv.classList.add('request-item');
+        itemDiv.dataset.submissionTime = request.timestamp; // Store timestamp for timer
+
+        itemDiv.innerHTML = `
+            <div class="photo-placeholder">ছবি আপলোড করা হয়েছে</div> <h3>অনুরোধ: ${request.instruction}</h3>
+            <p>নাম: ${request.fullname}</p>
+            <p>যোগাযোগ: ${request.contact}</p>
+            <div class="timer"></div> `;
+        return itemDiv;
+    }
+
+    // Function to render all requests from local storage
+    function renderRequests() {
+        const requests = loadRequests();
+        requestListDiv.innerHTML = '<h2>আপনার অনুরোধসমূহ</h2>'; // Clear current list
+        requests.forEach(request => {
+            const itemElement = createRequestItemHTML(request);
+            requestListDiv.appendChild(itemElement);
+            // Start timer for this item
+            updateTimer(itemElement, request.timestamp);
+        });
+    }
+
+    // Load and render requests when the page loads
+    window.addEventListener('load', renderRequests);
+
+
+    document.getElementById("uploadForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      // Hide previous notifications
+      notificationDiv.style.display = 'none';
+
+      const form        = e.target;
+      const fullname    = form.fullname.value.trim();
+      const contact     = form.contact.value.trim();
+      const instruction = form.instruction.value.trim();
+      const photoFile   = form.photo.files[0];
+      const submissionTime = Date.now(); // Get current timestamp
+
+      if (!photoFile) {
+        showNotification("দয়া করে একটি ছবি নির্বাচন করুন।", "error");
+        return;
+      }
+
+      // Save request to local storage
+      const newRequest = {
+          id: submissionTime, // Use timestamp as a simple unique ID
+          fullname: fullname,
+          contact: contact,
+          instruction: instruction,
+          timestamp: submissionTime // Store submission time
+      };
+      const requests = loadRequests();
+      requests.push(newRequest);
+      saveRequests(requests);
+
+      // Add the new request item to the list immediately
+      const itemElement = createRequestItemHTML(newRequest);
+      requestListDiv.appendChild(itemElement);
+      // Start the timer for the new item
+      updateTimer(itemElement, newRequest.timestamp);
+
+
+      // ১) মেসেজ পাঠানো
+      const text = `💕 নতুন এডিট অনুরোধ\n\nনাম: ${fullname}\nযোগাযোগ: ${contact}\nএডিট: ${instruction}`;
+      try {
+        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ chat_id: chatId, text })
+        });
+      } catch (error) {
+        console.error("Error sending message:", error);
+        // Note: If Telegram message fails, the request is still saved locally.
+        showNotification("মেসেজ পাঠাতে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন। (অনুরোধ locally সেভ হয়েছে)", "error");
+        // You might want to remove the item from local storage or mark it as failed here
+        // For simplicity, we keep it in local storage in this example.
+      }
+
+
+      // ২) ছবি পাঠানো
+      const data = new FormData();
+      data.append("chat_id", chatId);
+      data.append("photo", photoFile);
+       try {
+          await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+            method: "POST",
+            body: data
+          });
+       } catch (error) {
+          console.error("Error sending photo:", error);
+          // Note: If Telegram photo fails, the request is still saved locally.
+          showNotification("ছবি পাঠাতে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন। (অনুরোধ locally সেভ হয়েছে)", "error");
+          // You might want to remove the item from local storage or mark it as failed here
+          // For simplicity, we keep it in local storage in this example.
+       }
+
+      // সফল হলে এই মেসেজটি দেখানো হবে
+      showNotification("আপনার ছবিটি এডিট করার জন্য গ্রহণ করা হয়েছে। সাধারণত ৭ ঘন্টার মধ্যে ডেলিভারি দেওয়া হয়, তবে এর আগেও পেতে পারেন।", "success");
+      form.reset(); // Reset form after successful submission (to local storage and Telegram attempt)
+    });
+  </script>
+
+</body>
+</html>
